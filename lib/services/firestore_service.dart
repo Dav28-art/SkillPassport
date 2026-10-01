@@ -175,4 +175,39 @@ class FirestoreService {
   Future<void> deleteApplication(String applicationId) async {
     await applications.doc(applicationId).delete();
   }
+  // ==================== SKILL GAPS ====================
+
+  Future<void> createSkillGap({
+    required String userId,
+    required Map<String, dynamic> data,
+  }) async {
+    await skillGaps.add({
+      ...data,
+      'userId': userId,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  Future<QuerySnapshot<Map<String, dynamic>>> getUserSkillGaps(
+    String userId,
+  ) async {
+    return skillGaps.where('userId', isEqualTo: userId).get();
+  }
+
+  Future<DocumentSnapshot<Map<String, dynamic>>> getSkillGap(
+    String skillGapId,
+  ) async {
+    return skillGaps.doc(skillGapId).get();
+  }
+
+  Future<void> updateSkillGap({
+    required String skillGapId,
+    required Map<String, dynamic> data,
+  }) async {
+    await skillGaps.doc(skillGapId).update(data);
+  }
+
+  Future<void> deleteSkillGap(String skillGapId) async {
+    await skillGaps.doc(skillGapId).delete();
+  }
 }
