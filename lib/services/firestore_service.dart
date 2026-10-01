@@ -102,7 +102,40 @@ class FirestoreService {
     await skills.doc(skillId).update(data);
   }
 
+  
   Future<void> deleteSkill(String skillId) async {
     await skills.doc(skillId).delete();
+  }
+
+  // ==================== OPPORTUNITIES ====================
+
+  Future<void> createOpportunity({
+    required Map<String, dynamic> data,
+  }) async {
+    await opportunities.add({
+      ...data,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  Future<QuerySnapshot<Map<String, dynamic>>> getOpportunities() async {
+    return opportunities.get();
+  }
+
+  Future<DocumentSnapshot<Map<String, dynamic>>> getOpportunity(
+    String opportunityId,
+  ) async {
+    return opportunities.doc(opportunityId).get();
+  }
+
+  Future<void> updateOpportunity({
+    required String opportunityId,
+    required Map<String, dynamic> data,
+  }) async {
+    await opportunities.doc(opportunityId).update(data);
+  }
+
+  Future<void> deleteOpportunity(String opportunityId) async {
+    await opportunities.doc(opportunityId).delete();
   }
 }
