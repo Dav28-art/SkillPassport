@@ -24,7 +24,8 @@ class FirestoreService {
   CollectionReference<Map<String, dynamic>> get matches =>
       _db.collection('matches');
 
-  /// Crée ou remplace le profil d'un utilisateur.
+  // ==================== USERS ====================
+
   Future<void> createUser({
     required String userId,
     required Map<String, dynamic> data,
@@ -32,14 +33,12 @@ class FirestoreService {
     await users.doc(userId).set(data);
   }
 
-  /// Récupère le profil d'un utilisateur.
   Future<DocumentSnapshot<Map<String, dynamic>>> getUser(
     String userId,
   ) async {
     return users.doc(userId).get();
   }
 
-  /// Met à jour le profil d'un utilisateur.
   Future<void> updateUser({
     required String userId,
     required Map<String, dynamic> data,
@@ -47,7 +46,8 @@ class FirestoreService {
     await users.doc(userId).update(data);
   }
 
-  /// Crée un projet pour un utilisateur.
+  // ==================== PROJECTS ====================
+
   Future<void> createProject({
     required String userId,
     required Map<String, dynamic> data,
@@ -59,14 +59,12 @@ class FirestoreService {
     });
   }
 
-  /// Récupère les projets d'un utilisateur.
   Future<QuerySnapshot<Map<String, dynamic>>> getUserProjects(
     String userId,
   ) async {
     return projects.where('userId', isEqualTo: userId).get();
   }
 
-  /// Met à jour un projet.
   Future<void> updateProject({
     required String projectId,
     required Map<String, dynamic> data,
@@ -74,8 +72,37 @@ class FirestoreService {
     await projects.doc(projectId).update(data);
   }
 
-  /// Supprime un projet.
   Future<void> deleteProject(String projectId) async {
     await projects.doc(projectId).delete();
+  }
+
+  // ==================== SKILLS ====================
+
+  Future<void> createSkill({
+    required String userId,
+    required Map<String, dynamic> data,
+  }) async {
+    await skills.add({
+      ...data,
+      'userId': userId,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  Future<QuerySnapshot<Map<String, dynamic>>> getUserSkills(
+    String userId,
+  ) async {
+    return skills.where('userId', isEqualTo: userId).get();
+  }
+
+  Future<void> updateSkill({
+    required String skillId,
+    required Map<String, dynamic> data,
+  }) async {
+    await skills.doc(skillId).update(data);
+  }
+
+  Future<void> deleteSkill(String skillId) async {
+    await skills.doc(skillId).delete();
   }
 }
