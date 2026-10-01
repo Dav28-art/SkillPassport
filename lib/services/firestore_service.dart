@@ -46,4 +46,36 @@ class FirestoreService {
   }) async {
     await users.doc(userId).update(data);
   }
+
+  /// Crée un projet pour un utilisateur.
+  Future<void> createProject({
+    required String userId,
+    required Map<String, dynamic> data,
+  }) async {
+    await projects.add({
+      ...data,
+      'userId': userId,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  /// Récupère les projets d'un utilisateur.
+  Future<QuerySnapshot<Map<String, dynamic>>> getUserProjects(
+    String userId,
+  ) async {
+    return projects.where('userId', isEqualTo: userId).get();
+  }
+
+  /// Met à jour un projet.
+  Future<void> updateProject({
+    required String projectId,
+    required Map<String, dynamic> data,
+  }) async {
+    await projects.doc(projectId).update(data);
+  }
+
+  /// Supprime un projet.
+  Future<void> deleteProject(String projectId) async {
+    await projects.doc(projectId).delete();
+  }
 }
