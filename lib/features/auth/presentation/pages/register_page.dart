@@ -1,32 +1,28 @@
 import 'package:flutter/material.dart';
 import '../../../../core/routes/app_routes.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatelessWidget {
+  const RegisterPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Créer un compte'),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 50),
-
-              const Icon(
-                Icons.badge_outlined,
-                size: 70,
-              ),
-
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
 
               const Text(
-                'SkillPassport Africa',
+                'Bienvenue sur SkillPassport Africa',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 28,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -34,14 +30,21 @@ class LoginPage extends StatelessWidget {
               const SizedBox(height: 8),
 
               const Text(
-                'Valorisez vos compétences et trouvez des opportunités.',
+                'Créez votre compte pour commencer.',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 15,
+              ),
+
+              const SizedBox(height: 32),
+
+              const TextField(
+                decoration: InputDecoration(
+                  labelText: 'Nom complet',
+                  prefixIcon: Icon(Icons.person_outline),
+                  border: OutlineInputBorder(),
                 ),
               ),
 
-              const SizedBox(height: 40),
+              const SizedBox(height: 16),
 
               const TextField(
                 keyboardType: TextInputType.emailAddress,
@@ -52,7 +55,7 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
 
               const TextField(
                 obscureText: true,
@@ -63,7 +66,18 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 28),
+              const SizedBox(height: 16),
+
+              const TextField(
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Confirmer le mot de passe',
+                  prefixIcon: Icon(Icons.lock_outline),
+                  border: OutlineInputBorder(),
+                ),
+              ),
+
+              const SizedBox(height: 24),
 
               SizedBox(
                 height: 50,
@@ -75,27 +89,25 @@ class LoginPage extends StatelessWidget {
                     );
                   },
                   child: const Text(
-                    'Se connecter',
+                    'Créer mon compte',
                     style: TextStyle(fontSize: 16),
                   ),
                 ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
 
               TextButton(
                 onPressed: () {
-                  Navigator.pushNamed(
+                  Navigator.pushReplacementNamed(
                     context,
-                    AppRoutes.register,
+                    AppRoutes.login,
                   );
                 },
                 child: const Text(
-                  'Créer un compte',
+                  'J’ai déjà un compte',
                 ),
               ),
-
-              const SizedBox(height: 20),
             ],
           ),
         ),
