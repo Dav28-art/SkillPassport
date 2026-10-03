@@ -1,0 +1,23 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Vérifie que l'utilisateur est connecté
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // PROFILE PHOTO
+    match /users/{userId}/profile/{fileName} {
+      allow read, write: if isAuthenticated()
+        && request.auth.uid == userId;
+    }
+
+    // CV
+    match /users/{userId}/cv/{fileName} {
+      allow read, write: if isAuthenticated()
+        && request.auth.uid == userId;
+    }
+  }
+}
