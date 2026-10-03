@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../models/user_model.dart';
+import '../models/skill_model.dart';
+
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -23,4 +26,34 @@ class FirestoreService {
 
   CollectionReference<Map<String, dynamic>> get matches =>
       _db.collection('matches');
+ Future<UserModel?> getUser(String userId) async {
+  final doc = await users.doc(userId).get();
+
+  if (!doc.exists || doc.data() == null) {
+    return null;
+  }
+
+  return UserModel.fromMap(doc.id, doc.data()!);
+}
+Future<List<SkillModel>> getUserSkills(String userId) async {
+  final snapshot = await skills
+      .where('userId', isEqualTo: userId)
+      .get();
+
+  return snapshot.docs
+      .map((doc) => SkillModel.fromMap(doc.data()))
+      .toList();
+} 
+ Future<void> saveMatch(Map<String, dynamic> match) async {
+  await matches.add({
+    ...match,
+    'createdAt': FieldValue.serverTimestamp(),
+  });
+}
+ Future<void> saveSkillGap(Map<String, dynamic> skillGap) async {
+  await skillGaps.add({
+    ...skillGap,
+    'createdAt': FieldValue.serverTimestamp(),
+  });
+}  
 }
