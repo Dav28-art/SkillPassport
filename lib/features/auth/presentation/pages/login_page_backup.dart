@@ -30,16 +30,6 @@ class LoginPage extends StatelessWidget {
               },
               child: const Text('Continuer'),
             ),
-            const SizedBox(height: 12),
-            TextButton(
-              onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  AppRoutes.register,
-                );
-              },
-              child: const Text('Créer un compte'),
-            ),
           ],
         ),
       ),
