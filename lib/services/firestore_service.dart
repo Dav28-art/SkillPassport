@@ -1,7 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../models/user_model.dart';
+import '../models/skill_model.dart';
+
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+
+  // ==================== COLLECTIONS ====================
 
   CollectionReference<Map<String, dynamic>> get users =>
       _db.collection('users');
@@ -33,7 +38,17 @@ class FirestoreService {
     await users.doc(userId).set(data);
   }
 
-  Future<DocumentSnapshot<Map<String, dynamic>>> getUser(
+  Future<UserModel?> getUser(String userId) async {
+    final doc = await users.doc(userId).get();
+
+    if (!doc.exists || doc.data() == null) {
+      return null;
+    }
+
+    return UserModel.fromMap(doc.id, doc.data()!);
+  }
+
+  Future<DocumentSnapshot<Map<String, dynamic>>> getUserDocument(
     String userId,
   ) async {
     return users.doc(userId).get();
@@ -89,7 +104,17 @@ class FirestoreService {
     });
   }
 
-  Future<QuerySnapshot<Map<String, dynamic>>> getUserSkills(
+  Future<List<SkillModel>> getUserSkills(String userId) async {
+    final snapshot = await skills
+        .where('userId', isEqualTo: userId)
+        .get();
+
+    return snapshot.docs
+        .map((doc) => SkillModel.fromMap(doc.data()))
+        .toList();
+  }
+
+  Future<QuerySnapshot<Map<String, dynamic>>> getUserSkillsSnapshot(
     String userId,
   ) async {
     return skills.where('userId', isEqualTo: userId).get();
@@ -175,6 +200,7 @@ class FirestoreService {
   Future<void> deleteApplication(String applicationId) async {
     await applications.doc(applicationId).delete();
   }
+
   // ==================== SKILL GAPS ====================
 
   Future<void> createSkillGap({
@@ -211,6 +237,15 @@ class FirestoreService {
     await skillGaps.doc(skillGapId).delete();
   }
 
+  Future<void> saveSkillGap(
+    Map<String, dynamic> skillGap,
+  ) async {
+    await skillGaps.add({
+      ...skillGap,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+  }
+
   // ==================== MATCHES ====================
 
   Future<void> createMatch({
@@ -245,5 +280,14 @@ class FirestoreService {
 
   Future<void> deleteMatch(String matchId) async {
     await matches.doc(matchId).delete();
+  }
+
+  Future<void> saveMatch(
+    Map<String, dynamic> match,
+  ) async {
+    await matches.add({
+      ...match,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
   }
 }

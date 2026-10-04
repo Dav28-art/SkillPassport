@@ -1,44 +1,36 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class MatchModel {
+class SkillGapModel {
   final String id;
   final String userId;
-  final String opportunityId;
-  final double score;
-  final List<String> matchedSkills;
   final List<String> missingSkills;
+  final List<String> recommendations;
   final DateTime? createdAt;
 
-  const MatchModel({
+  const SkillGapModel({
     this.id = '',
     required this.userId,
-    required this.opportunityId,
-    required this.score,
-    required this.matchedSkills,
     required this.missingSkills,
+    required this.recommendations,
     this.createdAt,
   });
 
   Map<String, dynamic> toMap() => {
         'userId': userId,
-        'opportunityId': opportunityId,
-        'score': score,
-        'matchedSkills': matchedSkills,
         'missingSkills': missingSkills,
+        'recommendations': recommendations,
         'createdAt': createdAt,
       };
 
-  factory MatchModel.fromMap(
+  factory SkillGapModel.fromMap(
     String id,
     Map<String, dynamic> map,
   ) {
-    return MatchModel(
+    return SkillGapModel(
       id: id,
       userId: map['userId'] ?? '',
-      opportunityId: map['opportunityId'] ?? '',
-      score: (map['score'] ?? 0).toDouble(),
-      matchedSkills: List<String>.from(map['matchedSkills'] ?? []),
       missingSkills: List<String>.from(map['missingSkills'] ?? []),
+      recommendations: List<String>.from(map['recommendations'] ?? []),
       createdAt: (map['createdAt'] as Timestamp?)?.toDate(),
     );
   }
