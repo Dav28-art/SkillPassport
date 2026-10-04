@@ -66,5 +66,4 @@ class DefaultFirebaseOptions {
     projectId: 'skillpassport-africa',
     storageBucket: 'skillpassport-africa.firebasestorage.app',
   );
-
 }
