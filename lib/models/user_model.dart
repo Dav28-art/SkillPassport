@@ -5,6 +5,7 @@ class UserModel {
   final String country;
   final String? city;
   final String? photoUrl;
+  final String? cvUrl;
   final String? bio;
   final String? careerGoal;
 
@@ -15,6 +16,7 @@ class UserModel {
     required this.country,
     this.city,
     this.photoUrl,
+    this.cvUrl,
     this.bio,
     this.careerGoal,
   });
@@ -25,11 +27,15 @@ class UserModel {
         'country': country,
         'city': city,
         'photoUrl': photoUrl,
+        'cvUrl': cvUrl,
         'bio': bio,
         'careerGoal': careerGoal,
       };
 
-  factory UserModel.fromMap(String id, Map<String, dynamic> map) {
+  factory UserModel.fromMap(
+    String id,
+    Map<String, dynamic> map,
+  ) {
     return UserModel(
       id: id,
       name: map['name'] ?? '',
@@ -37,6 +43,7 @@ class UserModel {
       country: map['country'] ?? '',
       city: map['city'],
       photoUrl: map['photoUrl'],
+      cvUrl: map['cvUrl'],
       bio: map['bio'],
       careerGoal: map['careerGoal'],
     );

@@ -1,8 +1,75 @@
 import 'package:flutter/material.dart';
-import '../../../../core/routes/app_routes.dart';
 
-class LoginPage extends StatelessWidget {
+import '../../../../core/routes/app_routes.dart';
+import '../../../../services/auth_service.dart';
+
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  final AuthService _authService = AuthService();
+
+  bool _isLoading = false;
+
+  Future<void> _login() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Veuillez remplir tous les champs.'),
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await _authService.signIn(
+        email: email,
+        password: password,
+      );
+
+      if (!mounted) return;
+
+      Navigator.pushReplacementNamed(
+        context,
+        AppRoutes.dashboard,
+      );
+    } on Exception catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erreur de connexion : $e'),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +110,10 @@ class LoginPage extends StatelessWidget {
 
               const SizedBox(height: 40),
 
-              const TextField(
+              TextField(
+                controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Email',
                   prefixIcon: Icon(Icons.email_outlined),
                   border: OutlineInputBorder(),
@@ -54,9 +122,10 @@ class LoginPage extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              const TextField(
+              TextField(
+                controller: _passwordController,
                 obscureText: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Mot de passe',
                   prefixIcon: Icon(Icons.lock_outline),
                   border: OutlineInputBorder(),
@@ -68,31 +137,32 @@ class LoginPage extends StatelessWidget {
               SizedBox(
                 height: 50,
                 child: FilledButton(
-                  onPressed: () {
-                    Navigator.pushReplacementNamed(
-                      context,
-                      AppRoutes.dashboard,
-                    );
-                  },
-                  child: const Text(
-                    'Se connecter',
-                    style: TextStyle(fontSize: 16),
-                  ),
+                  onPressed: _isLoading ? null : _login,
+                  child: _isLoading
+                      ? const SizedBox(
+                          width: 22,
+                          height: 22,
+                          child: CircularProgressIndicator(),
+                        )
+                      : const Text(
+                          'Se connecter',
+                          style: TextStyle(fontSize: 16),
+                        ),
                 ),
               ),
 
               const SizedBox(height: 20),
 
               TextButton(
-                onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    AppRoutes.register,
-                  );
-                },
-                child: const Text(
-                  'Créer un compte',
-                ),
+                onPressed: _isLoading
+                    ? null
+                    : () {
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.register,
+                        );
+                      },
+                child: const Text('Créer un compte'),
               ),
 
               const SizedBox(height: 20),
